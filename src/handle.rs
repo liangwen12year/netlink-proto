@@ -39,8 +39,12 @@ where
         message: NetlinkMessage<T>,
         destination: SocketAddr,
     ) -> Result<impl Stream<Item = NetlinkMessage<T>>, Error<T>> {
+        eprintln!("******inside netlink proto, netlink msg: *******");
+        eprintln!("{:?}", message);
         let (tx, rx) = unbounded::<NetlinkMessage<T>>();
         let request = Request::from((message, destination, tx));
+        eprintln!("******request start: *******");
+        eprintln!("{:?}", request);
         debug!("handle: forwarding new request to connection");
         UnboundedSender::unbounded_send(&self.requests_tx, request).map_err(
             |e| {
